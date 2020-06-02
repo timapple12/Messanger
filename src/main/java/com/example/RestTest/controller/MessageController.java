@@ -15,15 +15,15 @@ public class MessageController {
     private List<Map<String, String>> messages = new ArrayList<Map<String, String>>() {{
         add(new HashMap<String, String>() {{
             put("id", "1");
-            put("message", "someText1");
+            put("text", "someText1");
         }});
         add(new HashMap<String, String>() {{
             put("id", "2");
-            put("message", "someText2");
+            put("text", "someText2");
         }});
         add(new HashMap<String, String>() {{
             put("id", "3");
-            put("message", "someText3");
+            put("text", "someText3");
         }});
     }};
 
@@ -53,7 +53,7 @@ public class MessageController {
                                        @RequestBody Map<String, String> message){
         Map<String, String> messageFromDb=getMessages(id);
         messageFromDb.putAll(message);
-        messageFromDb.put("'id",id);
+        messageFromDb.put("id",id);
         return messageFromDb;
     }
     @DeleteMapping("{id}")
