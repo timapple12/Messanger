@@ -1,65 +1,50 @@
 package com.example.RestTest.controller;
 
-import com.example.RestTest.exceptions.NotFoundException;
+import com.example.RestTest.domain.TextController;
+import com.example.RestTest.repository.TextRepository;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("message")
 public class MessageController {
-    private int counter=4;
-    private List<Map<String, String>> messages = new ArrayList<Map<String, String>>() {{
-        add(new HashMap<String, String>() {{
-            put("id", "1");
-            put("text", "someText1");
-        }});
-        add(new HashMap<String, String>() {{
-            put("id", "2");
-            put("text", "someText2");
-        }});
-        add(new HashMap<String, String>() {{
-            put("id", "3");
-            put("text", "someText3");
-        }});
-    }};
+    private final TextRepository messages;
+
+    @Autowired
+    public MessageController(TextRepository messages) {
+        this.messages = messages;
+    }
 
     @GetMapping
-    public List<Map<String, String>> listOFMessages() {
-        return messages;
+    public List<TextController> listOFMessages() {
+        return messages.findAll();
     }
     @GetMapping("{id}")
-    public Map<String, String> getOneMessage(@PathVariable String id){
-        return getMessages(id);
+    public TextController getOneMessage(@PathVariable("id") TextController id){
+        return id;
     }
-    private Map<String, String> getMessages(@PathVariable String id){
+   /* private Map<String, String> getMessages(@PathVariable String id){
         return messages.stream()
                 .filter(message->message.get("id").equals(id))
                 .findFirst()
                 .orElseThrow(NotFoundException::new);                 // Throws 404 exception
-    }
+    }*/
     @PostMapping
-    public Map<String, String> createMessage(@RequestBody Map<String, String> message){
-        message.put("id",String.valueOf(counter++));
-        messages.add(message);
-        return message;
+    public TextController createMessage(@RequestBody TextController message){
+        return messages.save(message);
     }
 
     @PutMapping("{id}")                 //refresh' the list of messages
-    public Map<String, String> refresh(@PathVariable String id,
-                                       @RequestBody Map<String, String> message){
-        Map<String, String> messageFromDb=getMessages(id);
-        messageFromDb.putAll(message);
-        messageFromDb.put("id",id);
-        return messageFromDb;
+    public TextController refresh(@PathVariable("id") TextController textFromDb,
+                                  @RequestBody TextController message){
+        BeanUtils.copyProperties(message,textFromDb,"id");              // copy from messages to textFromDb ignoring id
+        return messages.save(message);
     }
     @DeleteMapping("{id}")
-    public void delete(@PathVariable String id){
-        Map<String, String> message =getMessages(id);
-        messages.remove(message);
-
+    public void delete(@PathVariable("id") TextController message){
+       messages.delete(message);
     }
 }

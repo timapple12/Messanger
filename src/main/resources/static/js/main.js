@@ -33,6 +33,8 @@ Vue.component('message-form', {
                     data.json().then(result=>{
                         var index=getIndex(result.id);
                         this.messages.splice(index,1,result);
+                        this.text = '';
+                        this.id='';
                     })
                 })
             }else {
@@ -47,13 +49,21 @@ Vue.component('message-form', {
 
 });
 Vue.component('message-row', {
-    props: ['message','editText'],
+    props: ['message', 'editText', 'messages'],
     template: '<div>{{message.text}} <span>' +
         '<input type="button" value="Edit" v-on:click="edit"/>' +
+        '<input type="button" value="Delete" v-on:click="delet"/>' +
         '</span></div>',
     methods:{
         edit:function () {
             this.editText(this.message);
+        },
+        delet:function () {
+            messageApi.remove({id: this.message.id}).then(result=>{
+                if(result.ok){
+                    this.messages.splice(this.messages.indexOf(this.message),1)
+                }
+            })
         }
     }
 });
@@ -66,7 +76,7 @@ Vue.component('messages-list', {
     },
     template: '<div>' +
             '<message-form :messages="messages" :messageEd="message"/>' +
-        '<message-row v-for="message in messages" :message="message" :editText="editText"/>' +
+        '<message-row v-for="message in messages" :message="message" :editText="editText" :messages="messages"/>' +
         '</div>',
     created: function () {
         messageApi.get().then(result =>
