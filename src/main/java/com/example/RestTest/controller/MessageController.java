@@ -1,24 +1,28 @@
 package com.example.RestTest.controller;
 
+import com.example.RestTest.JsonViews.Views;
 import com.example.RestTest.domain.TextController;
 import com.example.RestTest.repository.TextRepository;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("message")
 public class MessageController {
     private final TextRepository messages;
-
+    private LocalDateTime localDateTime;
     @Autowired
     public MessageController(TextRepository messages) {
         this.messages = messages;
     }
 
     @GetMapping
+    @JsonView(Views.ID_NAME.class)
     public List<TextController> listOFMessages() {
         return messages.findAll();
     }
@@ -34,6 +38,8 @@ public class MessageController {
     }*/
     @PostMapping
     public TextController createMessage(@RequestBody TextController message){
+
+        message.setCreationTime(LocalDateTime.now());
         return messages.save(message);
     }
 
@@ -41,7 +47,7 @@ public class MessageController {
     public TextController refresh(@PathVariable("id") TextController textFromDb,
                                   @RequestBody TextController message){
         BeanUtils.copyProperties(message,textFromDb,"id");              // copy from messages to textFromDb ignoring id
-        return messages.save(message);
+        return messages.save(textFromDb);
     }
     @DeleteMapping("{id}")
     public void delete(@PathVariable("id") TextController message){
