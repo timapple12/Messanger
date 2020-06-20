@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @ToString(of={"id","text"})
 @EqualsAndHashCode(of={"id"})
 @Data                     //if we add @Data annotation all getters&setters shall be created automatically, but it doesn't work :D
-public class TextController {
+public class Text {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonView(Views.ID_NAME.class)
