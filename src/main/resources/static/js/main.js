@@ -78,13 +78,7 @@ Vue.component('messages-list', {
             '<message-form :messages="messages" :messageEd="message"/>' +
         '<message-row v-for="message in messages" :message="message" :editText="editText" :messages="messages"/>' +
         '</div>',
-    created: function () {
-        messageApi.get().then(result =>
-            result.json().then(result2 =>
-                result2.forEach(message => this.messages.push(message))
-            )
-        )
-    },
+
     methods:{
         editText:function (message) {
             this.message=message;
@@ -93,8 +87,23 @@ Vue.component('messages-list', {
 });
 var app = new Vue({
     el: '#app',
-    template: '<messages-list :messages="messages"/>',
+    template:
+        '<div>' +
+        '<div v-if="!profile">Authorize by <a href="/login">Google</a></div>' +
+        '<div v-else>' +
+        '<div>{{profile.name}}&nbsp;<a href="/logout">Logout</a></div>' +
+        '<messages-list :messages="messages" />' +
+        '</div>' +
+        '</div>',
     data: {
-        messages: []
-    }
+        messages: dataFront.messages,
+        profile: dataFront.profile
+    },
+   /* created: function () {
+        messageApi.get().then(result =>
+            result.json().then(result2 =>
+                result2.forEach(message => this.messages.push(message))
+            )
+        )
+    }*/
 });
