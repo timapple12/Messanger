@@ -19,6 +19,8 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
+    "@stomp/stompjs": "^5.4.4",
+    "sockjs-client": "^1.4.0",
     "vue": "^2.6.11",
     "vue-resource": "^1.5.1"
   }
