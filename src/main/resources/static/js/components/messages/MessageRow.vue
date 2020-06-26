@@ -1,8 +1,18 @@
 <template xmlns:v-on="http://www.w3.org/1999/xhtml">
-    <div>{{message.text}} <span>
-        <input type="button" value="Edit" v-on:click="edit"/>
-        <input type="button" value="Delete" v-on:click="del"/>
-        </span></div>
+    <v-card class="my-2">
+        <v-card-text>
+            <b>{{message.text}}</b>
+        </v-card-text>
+
+        <v-card-action>
+            <v-btn v-on:click="edit" small round>
+                <v-icon>edit</v-icon>
+            </v-btn>
+            <v-btn v-on:click="del" small round>
+                <v-icon>delete</v-icon>
+            </v-btn>
+        </v-card-action>
+    </v-card>
 </template>
 
 

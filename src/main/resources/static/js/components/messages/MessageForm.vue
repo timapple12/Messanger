@@ -1,8 +1,10 @@
 <template xmlns:v-on="http://www.w3.org/1999/xhtml">
-    <div>
-        <input type="text" placeholder="Enter a message" v-model="text"/>
-        <input type="button" value="Save" v-on:click="save"/>
-    </div>
+    <v-layout>
+        <v-text-field label="New message" placeholder="Enter a message" v-model="text"/>
+        <v-btn v-on:click="save">
+            Save
+        </v-btn>
+    </v-layout>
 </template>
 
 <script>

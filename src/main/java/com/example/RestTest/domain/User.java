@@ -1,6 +1,7 @@
 package com.example.RestTest.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.security.core.Authentication;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -84,4 +85,5 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }
