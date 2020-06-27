@@ -4,14 +4,14 @@
             <b>{{message.text}}</b>
         </v-card-text>
 
-        <v-card-action>
-            <v-btn v-on:click="edit" small round>
+        <v-card>
+            <v-btn v-on:click="edit" small rounded>
                 <v-icon>edit</v-icon>
             </v-btn>
-            <v-btn v-on:click="del" small round>
+            <v-btn v-on:click="del" small rounded>
                 <v-icon>delete</v-icon>
             </v-btn>
-        </v-card-action>
+        </v-card>
     </v-card>
 </template>
 
