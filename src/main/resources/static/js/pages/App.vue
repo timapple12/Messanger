@@ -26,7 +26,7 @@
             </v-container>
             <v-container>
                 <div v-if="profile">
-                    <messages-list :messages="messages" />
+                    <messages-list/>
                 </div>
             </v-container>
         </v-content>
@@ -34,19 +34,14 @@
     </v-app>
 </template>
 <script>
+    import  { mapState } from 'vuex'
     import MessagesList from 'components/messages/Messages.vue'
     import { addHandler } from "../util/ws";
     export default {
         components:{
           MessagesList
         },
-        data() {
-            return {
-                messages: dataFront.messages,
-                profile: dataFront.profile
-            }
-        },
-
+        computed: mapState(['profile']),
         created(){
             addHandler(data=>{
                 if(data.objectType==='MESSAGE'){
