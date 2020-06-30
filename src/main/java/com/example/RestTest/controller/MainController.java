@@ -5,6 +5,7 @@ import com.example.RestTest.repository.TextRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.AuthenticatedPrincipal;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
@@ -30,22 +31,20 @@ public class MainController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('USER')")
     public String main(Model model,
-                       Map<String,Object>secondModel,
+                       Map<String,Object> secondModel,
                        @AuthenticationPrincipal User user) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         HashMap<Object, Object> data = new HashMap<>();
         data.put("profile", user);
         data.put("messages", messageRepository.findAll());
         model.addAttribute("frontendData", data);
         model.addAttribute("isDevMode","dev".equals(mode));
         secondModel.put("test","someValue");
-        try{
+        /*try{
             System.out.println(principal.toString());
         }catch (Exception e){
 
-        }
+        }*/
 
         return "index.html";
     }

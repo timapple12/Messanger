@@ -1,7 +1,7 @@
 <template>
     <v-layout align:space-around justify-start column>
         <message-form  :messageEd="message"/>
-        <message-row v-for="message in sortedMessages" :message="message" :editText="editText" :messages="messages" :deleteMessage="deleteMessage"/>
+        <message-row v-for="message in sortedMessages" :message="message" :editText="editText"  :deleteMessage="deleteMessage"/>
     </v-layout>
 </template>
 

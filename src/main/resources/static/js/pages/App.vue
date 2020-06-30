@@ -34,30 +34,28 @@
     </v-app>
 </template>
 <script>
-    import  { mapState } from 'vuex'
+    import  { mapState , mapMutations} from 'vuex'
     import MessagesList from 'components/messages/Messages.vue'
     import { addHandler } from "../util/ws";
     export default {
         components:{
           MessagesList
         },
+        methods: mapMutations(['addMessageMutation', 'removeMessageMutation', 'updateMessageMutation']),
         computed: mapState(['profile']),
         created(){
             addHandler(data=>{
                 if(data.objectType==='MESSAGE'){
-                    let index = this.messages.findIndex(item => item.id === data.mess.id)
                     switch (data.eventType) {
                         case 'CREATE':
+                            this.addMessageMutation(data.mess)
+                            break
                         case 'UPDATE':
-                            if(index>-1){
-                                this.messages.splice(index,1,data.mess)
-                            }else{
-                                this.messages.push(data.mess)
-                            }
-                            break;
+                            this.updateMessageMutation(data.mess)
+                            break
                         case 'REMOVE':
-                            this.messages.splice(index,1)
-                            break;
+                            this.removeMessageMutation(data.mess)
+                            break
                         default:console.error('Event type is unknown')
                     }
                 }else{
