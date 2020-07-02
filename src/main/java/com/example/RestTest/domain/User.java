@@ -6,11 +6,12 @@ import org.springframework.security.core.Authentication;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
 @Table
-public class User {
+public class User implements Serializable {                                     // This class does serialize no object / jdbc session threw an exception without Serializable :(
     @Id
     private String id;                  // id fills from the Google side, type str
     private String username;
