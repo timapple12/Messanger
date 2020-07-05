@@ -20,7 +20,7 @@ public class User implements Serializable {                                     
     private String email;
     private String userData;
     private String location;
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime lastSeenActivity;
 
     public String getLocation() {
