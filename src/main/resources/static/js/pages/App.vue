@@ -8,39 +8,26 @@
         >
             <v-toolbar dense>
                 <v-toolbar-title>Spring RestTest Application</v-toolbar-title>
+                <v-btn text :disabled="$route.path === '/'" href="/">Messages</v-btn>
                 <v-spacer></v-spacer>
-                <div>
-                    <!--{{profile}}&nbsp;-->
-                </div>
-                <v-btn icon href="/logout">Logout>
+                <v-btn text :disabled="$route.path === '/profile'" href="/profile" v-if="profile">{{profile.name}}</v-btn>
+                <v-btn icon href="/logout">
                     <v-icon>exit_to_app</v-icon>
-
                 </v-btn>
             </v-toolbar>
         </v-card>
 
         <v-content>
-            <v-container v-if="!profile">
-                 Authorize by
-                <a href="/login">Google</a>
-            </v-container>
-            <v-container>
-                <div v-if="profile">
-                    <messages-list/>
-                </div>
-            </v-container>
+            <router-view></router-view>
         </v-content>
 
     </v-app>
 </template>
 <script>
     import  { mapState , mapMutations} from 'vuex'
-    import MessagesList from 'components/messages/Messages.vue'
     import { addHandler } from "../util/ws";
     export default {
-        components:{
-          MessagesList
-        },
+
         methods: mapMutations(['addMessageMutation', 'removeMessageMutation', 'updateMessageMutation']),
         computed: mapState(['profile']),
         created(){
@@ -63,6 +50,11 @@
                 }
             })
 
+        },
+        beforeMount(){
+            if(!this.profile){
+                this.$router.replace('auth')
+            }
         }
     }
 </script>

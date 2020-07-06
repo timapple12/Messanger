@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table
-public class User implements Serializable {                                     // This class does serialize no object / jdbc session threw an exception without Serializable :(
+public class User implements Serializable{                                     // This class does serialize no object / jdbc session threw an exception without Serializable :(
     @Id
     private String id;                  // id fills from the Google side, type str
     private String username;
