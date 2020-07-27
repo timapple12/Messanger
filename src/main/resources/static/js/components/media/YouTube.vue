@@ -17,15 +17,10 @@
                 let ur = this.src
                 let splitUrl = this.src.split('/')
                 let url = splitUrl[splitUrl.length-1].toString().replace("watch?v=",'')
-                let a =ur.match(/(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/?.*(?:watch|embed)?(?:.*v=|v\/|\/)([\w\-_]+)/)
-                console.log(a);
-                if(ur.toString().includes('youtube')){
-                   return 'https://www.youtube.com/embed/'+url
-               }else{
-                   return 'https://www.youtube.com/embed/'+url
-               }
 
+                //let a =ur.match(/(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/?.*(?:watch|embed)?(?:.*v=|v\/|\/)([\w\-_]+)/)
 
+                return 'https://www.youtube.com/embed/'+url
             }
         }
     }

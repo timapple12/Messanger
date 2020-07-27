@@ -1,6 +1,9 @@
 <template xmlns:v-on="http://www.w3.org/1999/xhtml">
     <v-layout>
-        <v-text-field label="New message" placeholder="Enter a message" v-model="text"/>
+        <v-text-field label="New message"
+                      placeholder="Enter a message"
+                      v-model="text"
+                      @keyup.enter="save"/>
         <v-btn v-on:click="save">
             Save
         </v-btn>

@@ -1,7 +1,9 @@
 package com.example.RestTest.controller;
 
+import ch.qos.logback.core.net.ObjectWriter;
 import com.example.RestTest.JsonViews.Views;
 import com.example.RestTest.domain.Text;
+import com.example.RestTest.domain.User;
 import com.example.RestTest.dto.EventType;
 import com.example.RestTest.dto.MetaDto;
 import com.example.RestTest.dto.ObjectType;
@@ -9,15 +11,19 @@ import com.example.RestTest.exceptions.NotFoundException;
 import com.example.RestTest.repository.TextRepository;
 import com.example.RestTest.util.WsSender;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -59,8 +65,17 @@ public class MessageController {
                 .orElseThrow(NotFoundException::new);                 // Throws 404 exception
     }*/
     @PostMapping
-    public Text createMessage(@RequestBody Text message){
+    public Text createMessage(
+            @RequestBody Text message,
+            @AuthenticationPrincipal User user,
+            Principal principal){
+
+        OAuth2Authentication auth = (OAuth2Authentication) principal;
+        String author = auth.getUserAuthentication().getDetails().toString();
+        // System.out.println(author);
+
         message.setCreationTime(LocalDateTime.now());
+      //  message.setAuthor(user);
         fillMetaData(message);
         Text text = messages.save(message);
         wsSender.accept(EventType.CREATE,text);

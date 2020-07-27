@@ -10,6 +10,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table
@@ -42,6 +43,12 @@ public class Text {
     @JsonView(Views.Date.class)
     private LocalDateTime creationTime;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User author;
+
+    @OneToMany(mappedBy = "text", orphanRemoval = true)
+    private List<Comment> comments;
 
     public String getTitle() {
         return title;
@@ -57,6 +64,22 @@ public class Text {
 
     public void setCover(String cover) {
         this.cover = cover;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     public String getDescription() {

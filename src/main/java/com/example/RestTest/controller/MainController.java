@@ -1,5 +1,8 @@
 package com.example.RestTest.controller;
 
+import com.example.RestTest.JsonViews.Views;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.example.RestTest.repository.TextRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,15 +17,17 @@ import java.util.HashMap;
 
 @Controller
 @RequestMapping("/")
-
 public class MainController {
     @Value("${spring.profiles.active}")
     private String mode;
     private final TextRepository messageRepository;
+    private final ObjectWriter objectWriter;
 
     @Autowired
-    public MainController(TextRepository messageRepository) {
+    public MainController(TextRepository messageRepository, ObjectMapper objectMapper) {
         this.messageRepository = messageRepository;
+        this.objectWriter = objectMapper.setConfig(objectMapper.getSerializationConfig())
+                .writerWithView(Views.ID_NAME.class);
     }
 
     @GetMapping
@@ -33,7 +38,7 @@ public class MainController {
         HashMap<Object, Object> data = new HashMap<>();
         try{
             data.put("profile", auth.getUserAuthentication().getDetails());
-            data.put("messages", messageRepository.findAll());
+            model.addAttribute("messages", objectWriter.writeValueAsString(messageRepository.findAll()));
         }catch (Exception e){
             System.err.println(e);
         }
