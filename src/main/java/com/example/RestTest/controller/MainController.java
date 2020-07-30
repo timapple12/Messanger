@@ -1,6 +1,7 @@
 package com.example.RestTest.controller;
 
 import com.example.RestTest.JsonViews.Views;
+import com.example.RestTest.domain.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.example.RestTest.repository.TextRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,8 +43,13 @@ public class MainController {
 
         if (auth != null) {
             data.put("profile", auth.getUserAuthentication().getDetails());
+
             model.addAttribute("messages", objectWriter.writeValueAsString(messageRepository.findAll()));
-            System.out.println(messageRepository.findAll());
+            /*User ur = (User) ((OAuth2Authentication) principal).getPrincipal();
+
+            System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+            auth.getUserAuthentication().getPrincipal();*/
         }
 
         model.addAttribute("frontendData", data);

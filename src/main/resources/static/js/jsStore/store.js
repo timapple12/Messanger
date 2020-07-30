@@ -7,7 +7,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        messages,          // same as 'messages: messages'
+        messages,                 // same as 'messages: messages'
         profile: dataFront.profile
     },
     getters: {
@@ -42,7 +42,6 @@ export default new Vuex.Store({
         addCommentMutation(state, comment) {
             const updateIndex = state.messages.findIndex(item => item.id === comment.message.id)
             const message = state.messages[updateIndex]
-            console.log(message)
             state.messages = [
                 ...state.messages.slice(0, updateIndex),
                 {
@@ -84,7 +83,6 @@ export default new Vuex.Store({
         async addCommentAction({commit, state}, comment) {
             const response = await commentApi.add(comment)
             const data = await response.json()
-            //console.log(data)
             commit('addCommentMutation', comment)
         }
     }

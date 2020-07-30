@@ -3,6 +3,7 @@ package com.example.RestTest.controller;
 import com.example.RestTest.JsonViews.Views;
 import com.example.RestTest.domain.Comment;
 import com.example.RestTest.domain.User;
+import com.example.RestTest.repository.UserDataRepository;
 import com.example.RestTest.services.CommentService;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,21 +20,20 @@ import java.security.Principal;
 @RequestMapping("comment")
 public class CommentController {
     private final CommentService commentService;
+    private final UserDataRepository userDataRepository;
 
     @Autowired
-    public CommentController(CommentService commentService) {
+    public CommentController(CommentService commentService, UserDataRepository userDataRepository) {
         this.commentService = commentService;
+        this.userDataRepository = userDataRepository;
     }
 
     @PostMapping
     @JsonView(Views.FullMessage.class)
     public Comment create(
             @RequestBody Comment comment,
-            Principal users
+            @AuthenticationPrincipal Principal user
     ){
-        OAuth2Authentication auth = (OAuth2Authentication) users;
-        User user = new User();
-        user.setUsername(auth.getUserAuthentication().getName());
         return commentService.create(user, comment);
     }
 }
