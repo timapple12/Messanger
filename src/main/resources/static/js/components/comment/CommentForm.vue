@@ -14,11 +14,11 @@
     import { mapActions } from 'vuex'
     export default {
         name: "CommentForm",
-        props: ['messageId'],
+        props: ['id'],
         data(){
           return {
               text: ''
-          };
+          }
         },
         methods: {
             ...mapActions(['addCommentAction']),
@@ -26,7 +26,7 @@
                 await this.addCommentAction({
                     text: this.text,
                     message: {
-                        id: this.messageId
+                        id: this.id
                     }
                 })
                 this.text = ''

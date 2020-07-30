@@ -1,7 +1,7 @@
 import Vue from 'vue'
 
-const comment=Vue.resource('/message/{id}')
+const comments = Vue.resource('/comment/{id}')
 
 export default {
-    add: message=>comment.save({},message)
+    add: comment => comments.save({}, comment)
 }

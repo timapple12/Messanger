@@ -6,6 +6,7 @@ import com.example.RestTest.dto.EventType;
 import com.example.RestTest.dto.ObjectType;
 import com.example.RestTest.dto.WsDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -22,6 +23,7 @@ public class WsSender {
     public WsSender(SimpMessagingTemplate simpMessagingTemplate, ObjectMapper mapper) {
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.mapper = mapper;
+        this.mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
     public <T> BiConsumer<EventType,T> getSender(Class view, ObjectType objectType){
         ObjectWriter objectWriter = mapper.setConfig(mapper.getSerializationConfig())

@@ -1,6 +1,8 @@
 package com.example.RestTest.controller;
 
 import com.example.RestTest.JsonViews.Views;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.example.RestTest.repository.TextRepository;
@@ -27,23 +29,24 @@ public class MainController {
     public MainController(TextRepository messageRepository, ObjectMapper objectMapper) {
         this.messageRepository = messageRepository;
         this.objectWriter = objectMapper.setConfig(objectMapper.getSerializationConfig())
-                .writerWithView(Views.ID_NAME.class);
+                .writerWithView(Views.FullMessage.class);
     }
 
     @GetMapping
     public String main(Model model,
-                       Principal principal) {
+                       Principal principal) throws JsonProcessingException {
         OAuth2Authentication auth = (OAuth2Authentication) principal;
-       // System.out.println(auth.getUserAuthentication().getDetails());
+
         HashMap<Object, Object> data = new HashMap<>();
-        try{
+
+        if (auth != null) {
             data.put("profile", auth.getUserAuthentication().getDetails());
             model.addAttribute("messages", objectWriter.writeValueAsString(messageRepository.findAll()));
-        }catch (Exception e){
-            System.err.println(e);
+            System.out.println(messageRepository.findAll());
         }
+
         model.addAttribute("frontendData", data);
-        model.addAttribute("isDevMode","dev".equals(mode));
+        model.addAttribute("isDevMode", "dev".equals(mode));
 
         return "index.html";
     }

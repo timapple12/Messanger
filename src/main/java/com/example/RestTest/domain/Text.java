@@ -2,53 +2,72 @@ package com.example.RestTest.domain;
 
 
 import com.example.RestTest.JsonViews.Views;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table
-@ToString(of={"id","text"})
-@EqualsAndHashCode(of={"id"})
-@Data                     //if we add @Data annotation all getters&setters shall be created automatically, but it doesn't work :D
-public class Text {
+//if we add @Data annotation all getters&setters shall be created automatically, but it doesn't work :D
+public class Text implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonView(Views.ID_NAME.class)
+    @JsonView(Views.FullMessage.class)
     private Integer id;
 
-    @JsonView(Views.ID_NAME.class)
+    @JsonView(Views.FullMessage.class)
     private String text;
 
-    @JsonView(Views.ID_NAME.class)
+    @JsonView(Views.FullMessage.class)
     private String link;
 
-    @JsonView(Views.ID_NAME.class)
+    @JsonView(Views.FullMessage.class)
     private String title;
 
-    @JsonView(Views.ID_NAME.class)
+    @JsonView(Views.FullMessage.class)
     private String cover;
 
-    @JsonView(Views.ID_NAME.class)
+    @JsonView(Views.FullMessage.class)
     private String description;
 
     @Column(updatable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonView(Views.Date.class)
     private LocalDateTime creationTime;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonView(Views.FullMessage.class)
     private User author;
 
     @OneToMany(mappedBy = "text", orphanRemoval = true)
+    @JsonView(Views.FullMessage.class)
     private List<Comment> comments;
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public Text() { }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonCreator
+    public Text(Integer id, String text, String link, String title, String cover, String description, LocalDateTime creationTime, User author, List<Comment> comments) {
+        this.id = id;
+        this.text = text;
+        this.link = link;
+        this.title = title;
+        this.cover = cover;
+        this.description = description;
+        this.creationTime = creationTime;
+        this.author = author;
+        this.comments = comments;
+    }
 
     public String getTitle() {
         return title;
@@ -133,5 +152,18 @@ public class Text {
                 ", description='" + description + '\'' +
                 ", creationTime=" + creationTime +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Text text1 = (Text) o;
+        return Objects.equals(id, text1.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

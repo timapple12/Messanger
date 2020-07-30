@@ -58,12 +58,6 @@ public class MessageController {
     public Text getOneMessage(@PathVariable("id") Text id){
         return id;
     }
-   /* private Map<String, String> getMessages(@PathVariable String id){
-        return messages.stream()
-                .filter(message->message.get("id").equals(id))
-                .findFirst()
-                .orElseThrow(NotFoundException::new);                 // Throws 404 exception
-    }*/
     @PostMapping
     public Text createMessage(
             @RequestBody Text message,
@@ -78,7 +72,7 @@ public class MessageController {
       //  message.setAuthor(user);
         fillMetaData(message);
         Text text = messages.save(message);
-        wsSender.accept(EventType.CREATE,text);
+        wsSender.accept(EventType.CREATE, text);
         return text;
     }
 

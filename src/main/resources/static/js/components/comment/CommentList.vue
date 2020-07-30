@@ -14,7 +14,7 @@
             ></comment-item>
         </template>
 
-        <comment-form :message-id="messageId"></comment-form>
+        <comment-form :id="messageId"></comment-form>
     </v-list>
 </template>
 
