@@ -61,12 +61,12 @@ export default new Vuex.Store({
             const result = await messagesApi.add(message)
             const data = await result.json()
             const index = state.messages.findIndex(item => item.id === data.id)
-            if (index > -1) {
+           if (index > -1) {
                 commit('updateMessageMutation', data)
             } else {
                 commit('addMessageMutation', data)
-                this.text = ''
             }
+            this.text = ''
         },
         async updateMessageAction({commit}, message) {
             const data = await messagesApi.update(message)

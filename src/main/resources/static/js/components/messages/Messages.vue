@@ -2,7 +2,7 @@
     <v-container>
         <v-layout align:space-around justify-start column>
             <message-form  :messageEd="message"/>
-            <message-row v-for="message in sortedMessages" :message="message" :editText="editText"  :deleteMessage="deleteMessage"/>
+            <message-row v-for="message in sortedMessages" :message="message" :editText="editText"/>
         </v-layout>
     </v-container>
 </template>
@@ -25,13 +25,6 @@
         methods:{
             editText(message) {
                 this.message=message
-            },
-             deleteMessage(message){
-                 messagesApi.remove(message.id).then(result=>{
-                     if(result.ok){
-                        // this.messages.splice(this.messages.indexOf(this.message), 1)
-                     }
-                 })
             }
         }
     }

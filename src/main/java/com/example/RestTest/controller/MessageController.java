@@ -42,7 +42,8 @@ public class MessageController {
 
     private final TextRepository messages;
     private LocalDateTime localDateTime;
-    private final BiConsumer<EventType,Text> wsSender;
+    private final BiConsumer<EventType, Text> wsSender;
+
     @Autowired
     public MessageController(TextRepository messages, WsSender wsSender) {
         this.messages = messages;
@@ -54,22 +55,23 @@ public class MessageController {
     public List<Text> listOFMessages() {
         return messages.findAll();
     }
+
     @GetMapping("{id}")
-    public Text getOneMessage(@PathVariable("id") Text id){
+    public Text getOneMessage(@PathVariable("id") Text id) {
         return id;
     }
+
     @PostMapping
     public Text createMessage(
             @RequestBody Text message,
-            @AuthenticationPrincipal User user,
-            Principal principal){
+            Principal principal) {
 
         OAuth2Authentication auth = (OAuth2Authentication) principal;
         String author = auth.getUserAuthentication().getDetails().toString();
         // System.out.println(author);
 
         message.setCreationTime(LocalDateTime.now());
-      //  message.setAuthor(user);
+        //  message.setAuthor(user);
         fillMetaData(message);
         Text text = messages.save(message);
         wsSender.accept(EventType.CREATE, text);
@@ -78,21 +80,23 @@ public class MessageController {
 
     @PutMapping("{id}")                 //refresh' the list of messages
     public Text refresh(@PathVariable("id") Text textFromDb,
-                        @RequestBody Text message){
-        BeanUtils.copyProperties(message,textFromDb,"id");              // copy from messages to textFromDb ignoring id
-        Text refreshedMessage=messages.save(textFromDb);
-        wsSender.accept(EventType.UPDATE,refreshedMessage);
+                        @RequestBody Text message) {
+        BeanUtils.copyProperties(message, textFromDb, "id");              // copy from messages to textFromDb ignoring id
+        Text refreshedMessage = messages.save(textFromDb);
+        wsSender.accept(EventType.UPDATE, refreshedMessage);
         return refreshedMessage;
     }
+
     @DeleteMapping("{id}")
-    public void delete(@PathVariable("id") Text message){
-        if(messages==null){
+    public void delete(@PathVariable("id") Text message) {
+        if (messages == null || message == null) {
             throw new NotFoundException();
-        }else{
+        } else {
             messages.delete(message);
-            wsSender.accept(EventType.REMOVE,message);
+            wsSender.accept(EventType.REMOVE, message);
         }
     }
+
     private void fillMetaData(Text mess) {
         String message = mess.getText();
         Matcher matcher = REGEX_URL.matcher(message);
@@ -100,9 +104,9 @@ public class MessageController {
             String url = message.substring(matcher.start(), matcher.end());
             matcher = REGEX_IMG.matcher(url);
             mess.setLink(url);
-            if(matcher.find()){
+            if (matcher.find()) {
                 mess.setCover(url);
-            }else if(!url.contains("youtu")){
+            } else if (!url.contains("youtu")) {
                 MetaDto meta = getMetaData(url);
                 mess.setTitle(meta.getTitle());
                 mess.setDescription(meta.getDescription());
@@ -110,10 +114,11 @@ public class MessageController {
             }
         }
     }
-    private MetaDto getMetaData(String url){
+
+    private MetaDto getMetaData(String url) {
         try {
             Document document = Jsoup.connect(url).get();
-            Elements title  = document.select("meta[name$=title], meta[property$=title]");
+            Elements title = document.select("meta[name$=title], meta[property$=title]");
             Elements description = document.select("meta[name$=description], meta[property$=description]");
             Elements cover = document.select("meta[name$=image], meta[property$=image]");
             return new MetaDto(
@@ -126,7 +131,8 @@ public class MessageController {
         }
         return null;
     }
-    private String getContent(Element element){
-        return element == null?"":element.attr("content");
+
+    private String getContent(Element element) {
+        return element == null ? "" : element.attr("content");
     }
 }

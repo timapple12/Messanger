@@ -48,7 +48,7 @@ public class Text implements Serializable {
     @JsonView(Views.FullMessage.class)
     private User author;
 
-    @OneToMany(mappedBy = "text", orphanRemoval = true)
+    @OneToMany(mappedBy = "text")
     @JsonView(Views.FullMessage.class)
     private List<Comment> comments;
 

@@ -28,15 +28,17 @@
         },
         methods: {
             ...mapActions(['updateMessageAction', 'addMessageAction']),
-            save() {
+           async save() {
                 let message = {id:this.id, text: this.text};
                 if (this.id) {
                     this.updateMessageAction(message)
                 }else {
                    this.addMessageAction(message)
+                    this.text = ''
+                    this.id=''
                 }
-                this.text = ''
-                this.id=''
+
+
             }
         }
     }

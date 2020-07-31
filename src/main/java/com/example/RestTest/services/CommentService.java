@@ -24,16 +24,7 @@ public class CommentService {
     }
 
     public Comment create(Principal users, Comment comment) {
-        OAuth2Authentication auth = (OAuth2Authentication) users;
-        Optional<User> user;
-        LinkedHashMap hash;
-        hash = (LinkedHashMap) auth.getUserAuthentication().getDetails();
-        if(hash.containsKey("sub")){
-            user = userDataRepository.findById((String) hash.get("sub"));
-        }else {
-            throw new IllegalArgumentException();
-        }
-        comment.setAuth(user.get());
+        comment.setAuth(new UserFactory().getAuthorisedUser(users, userDataRepository));
         commentsRepository.save(comment);
         return comment;
     }
