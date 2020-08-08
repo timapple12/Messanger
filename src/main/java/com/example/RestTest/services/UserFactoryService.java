@@ -12,7 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.Optional;
 
 @Service
-public class UserFactory {
+public class UserFactoryService {
 
     public User getAuthorisedUser(Principal principal, UserDataRepository userDataRepository){
         OAuth2Authentication auth = (OAuth2Authentication) principal;

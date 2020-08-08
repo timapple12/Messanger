@@ -1,6 +1,5 @@
 package com.example.RestTest.controller;
 
-import ch.qos.logback.core.net.ObjectWriter;
 import com.example.RestTest.JsonViews.Views;
 import com.example.RestTest.domain.Text;
 import com.example.RestTest.domain.User;
@@ -8,18 +7,18 @@ import com.example.RestTest.dto.EventType;
 import com.example.RestTest.dto.MetaDto;
 import com.example.RestTest.dto.ObjectType;
 import com.example.RestTest.exceptions.NotFoundException;
+import com.example.RestTest.repository.CommentsRepository;
 import com.example.RestTest.repository.TextRepository;
+import com.example.RestTest.repository.UserDataRepository;
+import com.example.RestTest.services.UserFactoryService;
 import com.example.RestTest.util.WsSender;
 import com.fasterxml.jackson.annotation.JsonView;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -34,19 +33,22 @@ import java.util.regex.Pattern;
 @RequestMapping("message")
 public class MessageController {
 
-    private static String PATTERN_URL = "https?:\\/\\/?[\\w\\d\\._\\-%\\/\\?=&#]+";
-    private static String PATTERN_IMG = "\\.(jpeg|jpg|gif|png)$";
+    private final static String PATTERN_URL = "https?:\\/\\/?[\\w\\d\\._\\-%\\/\\?=&#]+";
+    private final static String PATTERN_IMG = "\\.(jpeg|jpg|gif|png)$";
 
-    private static Pattern REGEX_URL = Pattern.compile(PATTERN_URL, Pattern.CASE_INSENSITIVE);
-    private static Pattern REGEX_IMG = Pattern.compile(PATTERN_IMG, Pattern.CASE_INSENSITIVE);
+    private final static Pattern REGEX_URL = Pattern.compile(PATTERN_URL, Pattern.CASE_INSENSITIVE);
+    private final static Pattern REGEX_IMG = Pattern.compile(PATTERN_IMG, Pattern.CASE_INSENSITIVE);
 
     private final TextRepository messages;
+    private final UserDataRepository userDataRepository;
+
     private LocalDateTime localDateTime;
     private final BiConsumer<EventType, Text> wsSender;
 
     @Autowired
-    public MessageController(TextRepository messages, WsSender wsSender) {
+    public MessageController(TextRepository messages, UserDataRepository userDataRepository, WsSender wsSender) {
         this.messages = messages;
+        this.userDataRepository = userDataRepository;
         this.wsSender = wsSender.getSender(Views.ID_NAME.class, ObjectType.MESSAGE);
     }
 
@@ -66,15 +68,14 @@ public class MessageController {
             @RequestBody Text message,
             Principal principal) {
 
-        OAuth2Authentication auth = (OAuth2Authentication) principal;
-        String author = auth.getUserAuthentication().getDetails().toString();
-        // System.out.println(author);
+        User authorisedUser = new UserFactoryService().getAuthorisedUser(principal, userDataRepository);
 
         message.setCreationTime(LocalDateTime.now());
-        //  message.setAuthor(user);
+        message.setAuthor(authorisedUser);
         fillMetaData(message);
         Text text = messages.save(message);
         wsSender.accept(EventType.CREATE, text);
+
         return text;
     }
 

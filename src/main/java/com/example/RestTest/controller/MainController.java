@@ -30,6 +30,7 @@ public class MainController {
     @Autowired
     public MainController(TextRepository messageRepository, ObjectMapper objectMapper) {
         this.messageRepository = messageRepository;
+        objectMapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
         this.objectWriter = objectMapper.setConfig(objectMapper.getSerializationConfig())
                 .writerWithView(Views.FullMessage.class);
     }
@@ -43,13 +44,7 @@ public class MainController {
 
         if (auth != null) {
             data.put("profile", auth.getUserAuthentication().getDetails());
-
             model.addAttribute("messages", objectWriter.writeValueAsString(messageRepository.findAll()));
-            /*User ur = (User) ((OAuth2Authentication) principal).getPrincipal();
-
-            System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-
-            auth.getUserAuthentication().getPrincipal();*/
         }
 
         model.addAttribute("frontendData", data);

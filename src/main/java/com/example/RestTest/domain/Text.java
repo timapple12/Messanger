@@ -4,9 +4,6 @@ package com.example.RestTest.domain;
 import com.example.RestTest.JsonViews.Views;
 import com.fasterxml.jackson.annotation.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,8 +13,9 @@ import java.util.Objects;
 
 @Entity
 @Table
+@AllArgsConstructor
 //if we add @Data annotation all getters&setters shall be created automatically, but it doesn't work :D
-public class Text implements Serializable {
+public class Text{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonView(Views.FullMessage.class)
@@ -48,26 +46,14 @@ public class Text implements Serializable {
     @JsonView(Views.FullMessage.class)
     private User author;
 
-    @OneToMany(mappedBy = "text")
+    @OneToMany(mappedBy = "message", cascade = CascadeType.ALL)
     @JsonView(Views.FullMessage.class)
     private List<Comment> comments;
+    
+    public Text() {}
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public Text() { }
+    public Text(String text) {this.text = text;}
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    @JsonCreator
-    public Text(Integer id, String text, String link, String title, String cover, String description, LocalDateTime creationTime, User author, List<Comment> comments) {
-        this.id = id;
-        this.text = text;
-        this.link = link;
-        this.title = title;
-        this.cover = cover;
-        this.description = description;
-        this.creationTime = creationTime;
-        this.author = author;
-        this.comments = comments;
-    }
 
     public String getTitle() {
         return title;

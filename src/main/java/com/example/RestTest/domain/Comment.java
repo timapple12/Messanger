@@ -1,9 +1,8 @@
 package com.example.RestTest.domain;
 
 import com.example.RestTest.JsonViews.Views;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,60 +11,49 @@ import java.util.Objects;
 
 @Entity
 @Table
-public class Comment implements Serializable {
+public class Comment{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonView(Views.FullMessage.class)
+    @JsonView(Views.ID_NAME.class)
     private Integer id;
 
+    @JsonView(Views.ID_NAME.class)
+    private String text;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "message_id", updatable = false)
     @JsonView(Views.FullMessage.class)
-    private String title;
-
     @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "text_id", updatable = false)
-    private Text text;
+    private Text message;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", updatable = false)
-    private User auth;
+    @JoinColumn(name = "user_id", nullable = false, updatable = false)
+    @JsonView(Views.FullMessage.class)
+    private User author;
 
-    private String author;
 
-    public User getAuth() {
-        return auth;
-    }
-
-    public void setAuth(User auth) {
-        this.auth = auth;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public Text getText(Text text) {
-        return this.text;
-    }
-
-    public void setText(Text text) {
-        this.text = text;
-    }
-
-    public Text getText() {
+    public String getText() {
         return text;
     }
 
-    public String getAuthor() {
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public Text getMessage() {
+        return message;
+    }
+
+    public void setMessage(Text message) {
+        this.message = message;
+    }
+
+    public User getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(User author) {
         this.author = author;
     }
 
@@ -94,8 +82,8 @@ public class Comment implements Serializable {
     public String toString() {
         return "Comment{" +
                 "id=" + id +
-                ", title='" + title + '\'' +
-                ", text=" + text +
+                ", title='" + text + '\'' +
+                ", text=" + message +
                 ", author=" + author +
                 '}';
     }

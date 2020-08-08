@@ -14,7 +14,7 @@
     import { mapActions } from 'vuex'
     export default {
         name: "CommentForm",
-        props: ['id'],
+        props: ['messageId'],
         data(){
           return {
               text: ''
@@ -26,7 +26,7 @@
                 await this.addCommentAction({
                     text: this.text,
                     message: {
-                        id: this.id
+                        id: this.messageId
                     }
                 })
                 this.text = ''
