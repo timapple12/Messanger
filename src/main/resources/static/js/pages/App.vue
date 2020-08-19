@@ -10,7 +10,8 @@
                 <v-toolbar-title>Spring RestTest Application</v-toolbar-title>
                 <v-btn text :disabled="$route.path === '/'" href="/">Messages</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn text :disabled="$route.path === '/profile'" href="/profile" v-if="profile">{{profile.name}}</v-btn>
+                <v-btn text :disabled="$route.path === '/profile'" href="/profile" v-if="profile">{{profile.name}}
+                </v-btn>
                 <v-btn icon href="/logout">
                     <v-icon>exit_to_app</v-icon>
                 </v-btn>
@@ -24,15 +25,16 @@
     </v-app>
 </template>
 <script>
-    import  { mapState , mapMutations} from 'vuex'
-    import { addHandler } from "../util/ws";
+    import {mapState, mapMutations} from 'vuex'
+    import {addHandler} from "../util/ws";
+
     export default {
 
-        methods: mapMutations(['addMessageMutation', 'removeMessageMutation', 'updateMessageMutation']),
+        methods: mapMutations(['addMessageMutation', 'removeMessageMutation', 'updateMessageMutation', 'addCommentMutation']),
         computed: mapState(['profile']),
-        created(){
-            addHandler(data=>{
-                if(data.objectType==='MESSAGE'){
+        created() {
+            addHandler(data => {
+                if (data.objectType === 'MESSAGE') {
                     switch (data.eventType) {
                         case 'CREATE':
                             this.addMessageMutation(data.mess)
@@ -43,16 +45,25 @@
                         case 'REMOVE':
                             this.removeMessageMutation(data.mess)
                             break
-                        default:console.error('Event type is unknown')
+                        default:
+                            console.error('Event type is unknown')
                     }
-                }else{
+                } else if (data.objectType === 'COMMENT') {
+                    switch (data.eventType) {
+                        case 'CREATE':
+                            this.addCommentMutation(data.mess)
+                            break
+                        default:
+                            console.error('Event type is unknown')
+                    }
+                } else {
                     console.error('ObjectType  is unknown')
                 }
             })
 
         },
-        beforeMount(){
-            if(!this.profile){
+        beforeMount() {
+            if (!this.profile) {
                 this.$router.replace('auth')
             }
         }

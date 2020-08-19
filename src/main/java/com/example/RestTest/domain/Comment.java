@@ -29,7 +29,7 @@ public class Comment{
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
-    @JsonView(Views.FullMessage.class)
+    @JsonView(Views.ID_NAME.class)
     private User author;
 
 

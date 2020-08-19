@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import 'api/resource'
+
 import App from 'pages/App.vue'
 import '@babel/polyfill'
 import { connect } from "./util/ws";

@@ -1,7 +1,22 @@
 <template xmlns:v-on="http://www.w3.org/1999/xhtml">
     <v-card class="my-2">
         <v-card-text>
-            <b>{{message.text}}</b>
+            <div>
+                <v-avatar v-if="message.author && message.author.userData" color="indigo"
+                          size="36px">
+                    <img :src="message.author.userData" :alt="message.author.username">
+                </v-avatar>
+
+                <v-avatar v-else
+                          size="36px"
+                          color="indigo">
+                    <v-icon dark>account_circle</v-icon>
+                </v-avatar>
+                {{ authorName }}
+            </div>
+            <div>
+                <b>{{message.text}}</b>
+            </div>
         </v-card-text>
 
         <media v-if="message.link" :message="message"></media>
@@ -37,6 +52,11 @@
             },
             del() {
                 this.removeMessageAction(this.message)
+            }
+        },
+        computed: {
+            authorName() {
+               return  this.message.author ? this.message.author.username : 'unauthorized'
             }
         }
     }

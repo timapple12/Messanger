@@ -9,7 +9,7 @@ export function connect() {
     const socket = new SockJS('/gs-guide-websocket')
     stompClient = Stomp.over(socket)
     stompClient.connect({}, frame => {
-        //console.log('Connected: ' + frame)                                        // DEPRECATED: it sends null message ot front-end
+        console.log('Connected: ' + frame)                                        // DEPRECATED: it sends null message ot front-end
         stompClient.subscribe('/topic/activity', message => {
 
         })
