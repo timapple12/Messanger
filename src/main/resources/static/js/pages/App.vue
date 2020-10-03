@@ -22,7 +22,7 @@
                     {{profile.username}}
                 </v-btn>
                 <v-btn icon href="/logout">Logout>
-                    <v-icon>exit_to_app</v-icon>
+                    <v-icon>mdi-heart</v-icon>
 
                 </v-btn>
             </v-toolbar>

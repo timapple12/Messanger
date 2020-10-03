@@ -38,8 +38,9 @@ module.exports = {
                     'css-loader'
                 ]
             }
-        ]
+        ],
     },
+
     plugins: [
         // make sure to include the plugin for the magic
         new VueLoaderPlugin()
@@ -49,5 +50,6 @@ module.exports = {
             path.join(__dirname, 'src', 'main', 'resources', 'static', 'js'),
             path.join(__dirname, 'node_modules'),
         ],
-    }
+
+    },
 }

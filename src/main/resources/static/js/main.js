@@ -5,8 +5,10 @@ import '@babel/polyfill'
 import { connect } from "./util/ws"
 import router from 'router/router'
 import store from 'store/store'
-import 'vuetify/dist/vuetify.min.css'
+
 import Vuetify from "vuetify"
+import 'vuetify/dist/vuetify.min.css'
+
 
 if (dataFront.profile) {
     connect();
@@ -15,10 +17,9 @@ if (dataFront.profile) {
 Vue.use(Vuetify)
 
 new Vue({
+    vuetify: new Vuetify({}),
     el: '#app',
     render:a=>a(App),
     router,
-    store,
-    vuetify: new Vuetify({})
-
+    store
 })
