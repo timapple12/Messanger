@@ -3,6 +3,7 @@
         <v-layout space-around justify-start column>
             <message-form :messageEd="message"/>
             <message-row v-for="message in sortedMessages" :message="message" :editText="editText"/>
+            <page-loader></page-loader>
         </v-layout>
     </v-container>
 </template>
@@ -11,7 +12,7 @@
     import {mapGetters} from 'vuex'
     import MessageRow from 'components/messages/MessageRow.vue'
     import MessageForm from 'components/messages/MessageForm.vue'
-    import messagesApi from "../../api/messages";
+    import PageLoader from "../page/PageLoader.vue";
 
     export default {
         data() {
@@ -20,6 +21,7 @@
             }
         },
         components: {
+            PageLoader,
             MessageRow, MessageForm
         },
         computed: mapGetters(['sortedMessages']),

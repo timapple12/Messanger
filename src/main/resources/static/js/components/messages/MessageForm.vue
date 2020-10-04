@@ -16,13 +16,14 @@
         props: ['messageEd'],
         data(){
             return {
+                id: null,
                 text: ''
             }
         },
         watch:{
             messageEd(newVal, lastVal){
                     this.text=newVal.text
-                    this.id=newVal.id
+                    this.id=null
                 }
         },
         methods: {
@@ -30,13 +31,14 @@
 
             save() {
                 let message = {id:this.id, text: this.text};
+                console.log(message)
                 if (this.id) {
                    this.updateMessageAction(message)
                 }else {
                    this.addMessageAction(message)
                 }
                 this.text = ''
-                this.id=''
+                this.id=null
             }
         }
     }

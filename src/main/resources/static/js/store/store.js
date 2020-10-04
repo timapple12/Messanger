@@ -8,7 +8,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         messages: messages,
-        profile: dataFront.profile
+        ...dataFront
     },
     getters: {
         sortedMessages: state => state.messages.sort((a, b) => -(a.id - b.id))
@@ -43,37 +43,64 @@ export default new Vuex.Store({
             }
         },
 
-        /** Comments*/
+        /** Comments */
 
         addCommentMutation(state, comment) {
             const updateIndex = state.messages.findIndex(item => item.id === comment.message.id)
             const message = state.messages[updateIndex]
 
-                if (message.comments === null) {
-                    state.messages = [
-                        ...state.messages.slice(0, updateIndex),
-                        {
-                            ...message,
-                            comments: [
-                                comment
-                            ]
-                        },
-                        ...state.messages.slice(updateIndex + 1)
-                    ]
-                } else {
-                    state.messages = [
-                        ...state.messages.slice(0, updateIndex),
-                        {
-                            ...message,
-                            comments: [
-                                ...message.comments,
-                                comment
-                            ]
-                        },
-                        ...state.messages.slice(updateIndex + 1)
-                    ]
-                }
+            if (message.comments === null) {
+                state.messages = [
+                    ...state.messages.slice(0, updateIndex),
+                    {
+                        ...message,
+                        comments: [
+                            comment
+                        ]
+                    },
+                    ...state.messages.slice(updateIndex + 1)
+                ]
+            } else {
+                state.messages = [
+                    ...state.messages.slice(0, updateIndex),
+                    {
+                        ...message,
+                        comments: [
+                            ...message.comments,
+                            comment
+                        ]
+                    },
+                    ...state.messages.slice(updateIndex + 1)
+                ]
             }
+        },
+
+        /** Pages */
+
+        addMessagePageMutation(state, messages) {
+            let id;
+            const reducedMessages = state.messages
+                .concat(messages)
+                .reduce((res, val) => { // Reduce a duplicates
+                    if(val){
+                        console.log(val)
+                        res[val.id] = val
+                        id = val;
+                        return res                  // Returns Map
+                    }
+                }, {})// Start value
+            if(reducedMessages){
+                console.log(reducedMessages)
+                state.messages = Object.values(reducedMessages)
+            }
+        },
+        updateTotalPagesMutation(state, totalPages) {
+            state.totalPages = totalPages
+        },
+        updateCurrentPageMutation(state, currentPage) {
+            state.currentPage = currentPage
+        }
+
 
     },
     actions: {
@@ -81,7 +108,7 @@ export default new Vuex.Store({
         /** Messages*/
 
         async addMessageAction({commit, state}, message) {
-           await messagesApi.add(message)
+            const result = await messagesApi.add(message)
         },
 
         async updateMessageAction({commit}, message) {
@@ -101,6 +128,14 @@ export default new Vuex.Store({
 
         async addCommentAction({commit, state}, comment) {
             await commentApi.add(comment)
+        },
+        async loadNextPageAction({commit, state}) {
+            const result = await messagesApi.page(state.currentPage+1)
+            const data = await result.json()
+
+            commit('addMessagePageMutation', data.messages)
+            commit('updateTotalPagesMutation', data.totalPages)
+            commit('updateCurrentPageMutation', data.currentPage)
         }
     }
 })

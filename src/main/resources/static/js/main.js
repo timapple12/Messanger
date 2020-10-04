@@ -1,14 +1,16 @@
 import Vue from 'vue'
+import Vuetify from "vuetify"
+
 import 'api/resource'
 import App from 'pages/App.vue'
 import '@babel/polyfill'
+
 import { connect } from "./util/ws"
 import router from 'router/router'
 import store from 'store/store'
 
-import Vuetify from "vuetify"
-import 'vuetify/dist/vuetify.min.css'
 
+import 'vuetify/dist/vuetify.min.css'
 
 if (dataFront.profile) {
     connect();
