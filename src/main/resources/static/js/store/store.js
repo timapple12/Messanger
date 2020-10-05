@@ -7,7 +7,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        messages: messages,
+        messages,
+        profile,
         ...dataFront
     },
     getters: {
@@ -18,10 +19,8 @@ export default new Vuex.Store({
         /** Messages*/
 
         addMessageMutation(state, message) {
-            state.messages = [
-                ...state.messages,
-                message
-            ]
+
+            state.messages.push(message)
         },
         updateMessageMutation(state, message) {
             const updateIndex = state.messages.findIndex(item => item.id === message.id)
@@ -78,19 +77,15 @@ export default new Vuex.Store({
         /** Pages */
 
         addMessagePageMutation(state, messages) {
-            let id;
             const reducedMessages = state.messages
                 .concat(messages)
-                .reduce((res, val) => { // Reduce a duplicates
+                .reduce((res, val) => {             // Reduce a duplicates
                     if(val){
-                        console.log(val)
                         res[val.id] = val
-                        id = val;
                         return res                  // Returns Map
                     }
-                }, {})// Start value
+                }, {})                              // Start value
             if(reducedMessages){
-                console.log(reducedMessages)
                 state.messages = Object.values(reducedMessages)
             }
         },

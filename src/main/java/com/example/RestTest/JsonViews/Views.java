@@ -9,4 +9,5 @@ public class Views {
 
     public interface FullComment extends Date {
     }
+    public interface  Profile extends Date{}
 }

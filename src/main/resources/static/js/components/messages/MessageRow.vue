@@ -1,20 +1,8 @@
 <template xmlns:v-on="http://www.w3.org/1999/xhtml">
     <v-card class="my-2">
         <v-card-text>
-            <div>
-                <v-avatar v-if="message.user.userData"
-                          size="36px">
-                    <img :src="message.user.userData">
-                </v-avatar>
+            <user-link :user="message.user" size="36"></user-link>
 
-                <v-avatar v-else
-                          size="36px"
-                          color="indigo">
-                    <v-icon dark>account_circle</v-icon>
-                </v-avatar>
-
-                {{ authorName }}
-            </div>
             <div>
                 <b>{{message.text}}</b>
             </div>
@@ -40,16 +28,12 @@
     import {mapActions} from 'vuex'
     import Media from "../media/Media.vue";
     import CommentList from "../comment/CommentList.vue";
-    import messages from "../../api/messages";
+    import UserLink from "../page/UserLink.vue";
 
     export default {
-        components: {CommentList, Media},
+        components: {UserLink, CommentList, Media},
         props: ['message', 'editText'],
-        computed: {
-            authorName() {
-                return this.message.user ? this.message.user.username : 'unknown user';
-            }
-        },
+
         methods: {
             ...mapActions(['removeMessageAction']),
             edit() {

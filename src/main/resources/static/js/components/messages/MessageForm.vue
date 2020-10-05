@@ -31,7 +31,6 @@
 
             save() {
                 let message = {id:this.id, text: this.text};
-                console.log(message)
                 if (this.id) {
                    this.updateMessageAction(message)
                 }else {

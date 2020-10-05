@@ -9,10 +9,9 @@ import { connect } from "./util/ws"
 import router from 'router/router'
 import store from 'store/store'
 
-
 import 'vuetify/dist/vuetify.min.css'
 
-if (dataFront.profile) {
+if (profile) {
     connect();
 }
 

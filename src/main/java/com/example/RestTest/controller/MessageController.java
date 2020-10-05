@@ -28,10 +28,7 @@ public class MessageController {
     @GetMapping
     @JsonView(Views.ID_NAME.class)
     public PageDto listOFMessages(@PageableDefault(size = 4, sort = { "id" }, direction = Sort.Direction.DESC) Pageable pageable) {
-        PageDto pageDto = messageService.findAll(pageable);
-        System.out.println(pageDto);
-        System.out.println(pageable.toString());
-        return pageDto;
+        return messageService.findAll(pageable);
     }
 
     @GetMapping("{id}")

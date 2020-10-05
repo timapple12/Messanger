@@ -2,7 +2,6 @@ package com.example.RestTest.service;
 
 import com.example.RestTest.JsonViews.Views;
 import com.example.RestTest.domain.Comment;
-import com.example.RestTest.domain.Text;
 import com.example.RestTest.domain.User;
 import com.example.RestTest.dto.EventType;
 import com.example.RestTest.dto.ObjectType;
@@ -28,7 +27,7 @@ public class CommentService {
     }
 
     public Comment create(Principal users, Comment comment) {
-        User authorisedUser = new UserGetAuthService().getAuthorisedUser(users, userDataRepository);
+        User authorisedUser = new UserAuthService(userDataRepository).getAuthorisedUser(users);
 
         comment.setUser(authorisedUser);
         Comment savedComment = commentsRepository.save(comment);

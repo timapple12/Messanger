@@ -61,7 +61,7 @@ public class MessageService {
 
 
     public Text createMessage(Text message, Principal principal) {
-        User authorisedUser = new UserGetAuthService().getAuthorisedUser(principal, userDataRepository);
+        User authorisedUser = new UserAuthService(userDataRepository).getAuthorisedUser(principal);
 
         message.setCreationTime(LocalDateTime.now());
         message.setUser(authorisedUser);
