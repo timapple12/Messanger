@@ -10,10 +10,14 @@
 
             <comment-item :comment="item"
                           :key="'item'+index"
+                          class="pl-md-16"
             ></comment-item>
         </template>
 
-        <comment-form :message-id="messageId"></comment-form>
+        <comment-form :message-id="messageId"
+                      class="pl-md-16"
+        >
+        </comment-form>
     </v-list>
 </template>
 

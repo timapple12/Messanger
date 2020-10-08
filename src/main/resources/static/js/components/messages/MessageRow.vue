@@ -2,8 +2,7 @@
     <v-card class="my-2">
         <v-card-text>
             <user-link :user="message.user" size="36"></user-link>
-
-            <div>
+            <div class="pt-3 pl-4">
                 <b>{{message.text}}</b>
             </div>
         </v-card-text>

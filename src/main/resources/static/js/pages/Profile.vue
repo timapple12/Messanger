@@ -43,7 +43,7 @@
             isSubscribed() {
                 return this.profile.subscribers &&
                     this.profile.subscribers.find(sub => {
-                        return sub.id === this.$store.state.profile.id
+                        return sub.subscriber === this.$store.state.profile.id
                     })
             }
         },

@@ -3,12 +3,14 @@ package com.example.RestTest.service;
 import com.example.RestTest.JsonViews.Views;
 import com.example.RestTest.domain.Text;
 import com.example.RestTest.domain.User;
+import com.example.RestTest.domain.UserSubscription;
 import com.example.RestTest.dto.EventType;
 import com.example.RestTest.dto.MetaDto;
 import com.example.RestTest.dto.ObjectType;
 import com.example.RestTest.dto.PageDto;
 import com.example.RestTest.repository.TextRepository;
 import com.example.RestTest.repository.UserDataRepository;
+import com.example.RestTest.repository.UserSubRepository;
 import com.example.RestTest.util.WsSender;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -20,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
+
 import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -27,6 +30,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class MessageService {
@@ -38,12 +42,15 @@ public class MessageService {
 
     private final TextRepository textRepository;
     private final UserDataRepository userDataRepository;
+    private final UserSubRepository userSubRepository;
+
     private final BiConsumer<EventType, Text> wsSender;
 
     @Autowired
-    public MessageService(TextRepository textRepository, UserDataRepository userDataRepository, WsSender wsSender) {
+    public MessageService(TextRepository textRepository, UserDataRepository userDataRepository, UserSubRepository userSubRepository, WsSender wsSender) {
         this.textRepository = textRepository;
         this.userDataRepository = userDataRepository;
+        this.userSubRepository = userSubRepository;
         this.wsSender = wsSender.getSender(Views.ID_NAME.class, ObjectType.MESSAGE);
     }
 
@@ -111,7 +118,13 @@ public class MessageService {
         return element == null ? "" : element.attr("content");
     }
 
-    public PageDto findAll(Pageable pageable) {
+    public PageDto findAll(Pageable pageable, User user) {
+        List<User> channels = userSubRepository.findBySubscriber(user)
+               .stream()
+                    .map(UserSubscription::getChannel)
+                   .collect(Collectors.toList());
+
+        channels.add(user);
 
         Page<Text> page = textRepository.findAll(pageable);
 
@@ -119,7 +132,7 @@ public class MessageService {
         textList.forEach(obj -> MessageService.fillMetaData(obj));
 
         return new PageDto(page.getContent(),
-                            pageable.getPageNumber(),
-                            page.getTotalPages());
+                pageable.getPageNumber(),
+                page.getTotalPages());
     }
 }

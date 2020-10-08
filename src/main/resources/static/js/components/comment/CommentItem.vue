@@ -3,7 +3,7 @@
        <user-link :user="comment.user" size="18"></user-link>
 
         <v-list-item-content>
-            <v-list-item-title>
+            <v-list-item-title class="pl-3">
                 {{comment.text}}
             </v-list-item-title>
         </v-list-item-content>

@@ -1,11 +1,14 @@
 package com.example.RestTest.service;
 
 import com.example.RestTest.domain.User;
+import com.example.RestTest.domain.UserSubscription;
 import com.example.RestTest.repository.UserDataRepository;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ProfileService {
@@ -17,12 +20,16 @@ public class ProfileService {
 
     public User changeSub(User user, Principal principal) {
         User authUser = new UserAuthService(userDataRepository).getAuthorisedUser(principal);
-        Set<User> subscribers = user.getSubscribers();
+        List<UserSubscription> subs = user.getSubscribers()
+                .stream()
+                .filter(sub -> sub.getSubscriber().equals(authUser))
+                .collect(Collectors.toList());
 
-        if(subscribers.contains(authUser)){
-            subscribers.remove(authUser);
+        if(subs.isEmpty()){
+            UserSubscription subscription = new UserSubscription(user, authUser);
+            user.getSubscribers().add(subscription);
         }else {
-            subscribers.add(authUser);
+            user.getSubscribers().removeAll(subs);
         }
 
         return userDataRepository.save(user);

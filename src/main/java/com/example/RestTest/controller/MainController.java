@@ -64,7 +64,7 @@ public class MainController {
             Sort orderById = Sort.by(Sort.Direction.DESC, "id");
             PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE, orderById);
 
-            PageDto texts = messageService.findAll(pageRequest);
+            PageDto texts = messageService.findAll(pageRequest, user);
             String messages = objectWriter.writeValueAsString(texts.getMessages());
 
             model.addAttribute("messages", messages);

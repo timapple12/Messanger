@@ -34,47 +34,35 @@ public class User implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime lastSeenActivity;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_subscriptions",
-            joinColumns = @JoinColumn(name = "subscriber_id"),
-            inverseJoinColumns = @JoinColumn(name = "channel_id")
+    @JsonView(Views.Profile.class)
+    @OneToMany(
+            mappedBy = "subscriber",
+            orphanRemoval = true
     )
-    @JsonIdentityReference                                                     // To avoid stackOverflow error
-    @JsonIdentityInfo(                                                         // If this field serialized more than 2 times it will be replaced with 'id'
-            property = "id",
-            generator = ObjectIdGenerators.PropertyGenerator.class
+    private Set<UserSubscription> subscriptions = new HashSet<>();
+
+    @OneToMany(
+            mappedBy = "channel",
+            orphanRemoval = true,
+            cascade = CascadeType.ALL
     )
     @JsonView(Views.Profile.class)
-    private Set<User> subscriptions = new HashSet<>();
+    private Set<UserSubscription> subscribers = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_subscribers",
-            joinColumns = @JoinColumn(name = "channel_id"),
-            inverseJoinColumns = @JoinColumn(name = "subscriber_id")
-    )
-    @JsonIdentityReference                                                     // To avoid stackOverflow error
-    @JsonIdentityInfo(                                                         // If this field serialized more than 2 times it will be replaced with 'id'
-            property = "id",
-            generator = ObjectIdGenerators.PropertyGenerator.class
-    )
-    @JsonView(Views.Profile.class)
-    private Set<User> subscribers = new HashSet<>();
 
-    public Set<User> getSubscriptions() {
+    public Set<UserSubscription> getSubscriptions() {
         return subscriptions;
     }
 
-    public void setSubscriptions(Set<User> subscriptions) {
+    public void setSubscriptions(Set<UserSubscription> subscriptions) {
         this.subscriptions = subscriptions;
     }
 
-    public Set<User> getSubscribers() {
+    public Set<UserSubscription> getSubscribers() {
         return subscribers;
     }
 
-    public void setSubscribers(Set<User> subscribers) {
+    public void setSubscribers(Set<UserSubscription> subscribers) {
         this.subscribers = subscribers;
     }
 
@@ -142,17 +130,18 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id);
-    }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id);
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", userGender='" + userGender + '\'' +
+                ", email='" + email + '\'' +
+                ", userData='" + userData + '\'' +
+                ", location='" + location + '\'' +
+                ", lastSeenActivity=" + lastSeenActivity +
+                '}';
     }
-
 }
