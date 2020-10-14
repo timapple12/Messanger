@@ -1,6 +1,11 @@
 HELP.md
 .gradle
 build/
+*.log
+*.json
+.gitignore
+.log
+.json
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**
 !**/src/test/**
