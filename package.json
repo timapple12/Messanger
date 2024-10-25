@@ -28,7 +28,7 @@
     "@stomp/stompjs": "^5.4.4",
     "nuxt-material-design-icons-iconfont": "^1.0.2",
     "sockjs-client": "^1.4.0",
-    "vue": "^2.6.11",
+    "vue": "^3.0.0",
     "vue-material-design-icons": "^4.9.0",
     "vue-resource": "^1.5.1",
     "vue-router": "^3.4.5",
